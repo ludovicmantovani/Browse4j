@@ -134,13 +134,7 @@ jobs:
           uv add --dev pyinstaller
 
       - name: Build executable
-        run: |
-          uv run pyinstaller \
-            --onefile \
-            --windowed \
-            --name browse4j \
-            --collect-all PyQt6 \
-            src/main.py
+        run: uv run pyinstaller --onefile --windowed --name browse4j --collect-all PyQt6 src/main.py
 
       - name: Upload executable artifact
         uses: actions/upload-artifact@v4
