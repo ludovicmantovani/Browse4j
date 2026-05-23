@@ -94,7 +94,10 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact-name: browse4j-linux
+            artifact-name: browse4j-linux-ubuntu24
+            executable: browse4j
+          - os: ubuntu-22.04
+            artifact-name: browse4j-linux-ubuntu22
             executable: browse4j
           - os: windows-latest
             artifact-name: browse4j-windows
