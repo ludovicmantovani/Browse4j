@@ -96,12 +96,15 @@ jobs:
           - os: ubuntu-latest
             artifact-name: browse4j-linux-ubuntu24
             executable: browse4j
+            archive: browse4j-linux-ubuntu24.tar.gz
           - os: ubuntu-22.04
             artifact-name: browse4j-linux-ubuntu22
             executable: browse4j
+            archive: browse4j-linux-ubuntu22.tar.gz
           - os: windows-latest
             artifact-name: browse4j-windows
             executable: browse4j.exe
+            archive: browse4j-windows.exe
 
     steps:
       - uses: actions/checkout@v4
@@ -139,7 +142,20 @@ jobs:
       - name: Build executable
         run: uv run python -m PyInstaller --onefile --windowed --name browse4j --collect-all PyQt6 --paths src src/main.py
 
-      - name: Upload executable artifact
+      - name: Create tar.gz archive (Linux only)
+        if: runner.os == 'Linux'
+        run: tar -czf dist/${{ matrix.archive }} -C dist ${{ matrix.executable }}
+
+      - name: Upload executable artifact (Linux)
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: dist/${{ matrix.archive }}
+          retention-days: 30
+
+      - name: Upload executable artifact (Windows)
+        if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact-name }}
@@ -158,23 +174,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download Linux executable
+      - name: Download Linux Ubuntu 24 executable
         uses: actions/download-artifact@v4
         with:
-          name: browse4j-linux
-          path: release/
+          name: browse4j-linux-ubuntu24
+          path: release/ubuntu24/
+
+      - name: Download Linux Ubuntu 22 executable
+        uses: actions/download-artifact@v4
+        with:
+          name: browse4j-linux-ubuntu22
+          path: release/ubuntu22/
 
       - name: Download Windows executable
         uses: actions/download-artifact@v4
         with:
           name: browse4j-windows
-          path: release/
+          path: release/windows/
 
-      - name: Rename executables with version tag
+      - name: Rename files with version tag
         run: |
           TAG=${GITHUB_REF#refs/tags/}
-          mv release/browse4j     release/browse4j-${TAG}-linux
-          mv release/browse4j.exe release/browse4j-${TAG}-windows.exe
+          mv release/ubuntu24/browse4j-linux-ubuntu24.tar.gz  release/browse4j-${TAG}-linux-ubuntu24.tar.gz
+          mv release/ubuntu22/browse4j-linux-ubuntu22.tar.gz  release/browse4j-${TAG}-linux-ubuntu22.tar.gz
+          mv release/windows/browse4j.exe                     release/browse4j-${TAG}-windows.exe
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
