@@ -1,6 +1,6 @@
 """Test module for utils."""
 
-from src.lib.utils import math_add
+from lib.utils import math_add
 
 
 def test_addition():

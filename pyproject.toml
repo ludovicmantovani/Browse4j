@@ -16,3 +16,49 @@ dev = [
     "pytest-cov>=7.1.0",
     "ruff>=0.15.14",
 ]
+
+# Ruff
+[tool.ruff]
+src = ["src", "tests"]
+line-length = 100
+target-version="py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+
+# Mypy
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+mypy_path = "src"
+explicit_package_bases = true
+files = ["src"]
+
+# Pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = [
+    "--cov=lib",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml:coverage.xml",
+    "--cov-fail-under=80",
+]
+
+[tool.coverage.run]
+source = ["src/lib"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "def __repr__",
+]
