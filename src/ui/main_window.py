@@ -3,14 +3,15 @@
 import sys
 
 from PySide6.QtWidgets import QApplication, QMainWindow
+
 from ui.designer.MainWindow import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self)  # type: ignore[no-untyped-call]
 
 
 def main() -> None:
